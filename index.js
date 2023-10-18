@@ -1,17 +1,38 @@
-// Importa el módulo contacts.js
-const contacts = require('./contacts');
+const contacts = require("./contacts");
 
-// Ejemplo de uso de las funciones
-console.log('Listado de contactos:');
-const allContacts = contacts.listContacts();
-console.log(allContacts);
+const { Command } = require("commander");
+const program = new Command();
 
-console.log('Obtener un contacto por ID:');
-const contactById = contacts.getContactById('AeHIrLTr6JkxGE6SN-0Rw');
-console.log(contactById);
+program
+  .option("-a, --action <type>", "choose action")
+  .option("-i, --id <type>", "user id")
+  .option("-n, --name <type>", "user name")
+  .option("-e, --email <type>", "user email")
+  .option("-p, --phone <type>", "user phone");
 
-console.log('Eliminar un contacto por ID:');
-contacts.removeContact('AeHIrLTr6JkxGE6SN-0Rw');
+program.parse(process.argv);
+const argv = program.opts();
 
-console.log('Agregar un nuevo contacto:');
-contacts.addContact('Nuevo Contacto', 'nuevo@ejemplo.com', '(123) 456-7890');
+// TODO: refactorizar
+function invokeAction({ action, id, name, email, phone }) {
+  switch (action) {
+    case "list":
+      contacts.listContacts();
+
+      break;
+    case "get":
+      contacts.getContactById(id);
+
+      break;
+    case "add":
+      contacts.addContact(name, email, phone);
+      break;
+    case "remove":
+      contacts.removeContact(id);
+      break;
+    default:
+      console.warn(" Unknown action type!");
+  }
+}
+
+invokeAction(argv);

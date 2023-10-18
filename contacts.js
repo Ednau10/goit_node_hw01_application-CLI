@@ -8,26 +8,24 @@ function listContacts() {
     const contactsData = fs.readFileSync(contactsPath, 'utf-8');
     const contacts = JSON.parse(contactsData);
     console.log('Listado de contactos:');
-    console.log(contacts);
+    console.table(contacts);
   } catch (error) {
     console.error('Error al listar contactos:', error.message);
   }
 }
 
 function getContactById(contactId) {
-  try {
-    const contactsData = fs.readFileSync(contactsPath, 'utf-8');
-    const contacts = JSON.parse(contactsData);
-    const contact = contacts.find((c) => c.id === contactId);
-    if (!contact) {
-      console.log(`No se encontró un contacto con el ID ${contactId}`);
-    } else {
-      console.log('Obtener un contacto por ID:');
-      console.log(contact);
-    }
-  } catch (error) {
-    console.error('Error al obtener contacto por ID:', error.message);
-  }
+  fs.readFile(contactsPath, "utf-8", (error, data) => {
+      if (error) {
+          console.log(error);
+      }
+      const contacts = JSON.parse(data.toString());
+      contacts.forEach((contact) => {
+          if (contact.id === contactId) {
+              console.log(contact);
+          }
+      });
+  });
 }
 
 function removeContact(contactId) {
